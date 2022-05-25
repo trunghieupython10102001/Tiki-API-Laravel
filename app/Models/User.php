@@ -15,6 +15,12 @@ class User extends Authenticatable
     protected $fillable = [
         'phone_number',
         'password',
+        'email',
+        'nick_name',
+        'birthday',
+        'address',
+        'gender',
+        'avatar_url',
     ];
 
     protected $hidden = [
@@ -22,19 +28,19 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    protected $casts = [
-        'phone_verified_at' => 'datetime',
-    ];
     // one to many relationship
-    public function orders() {
+    public function orders()
+    {
         return $this->hasMany(Order::class);
     }
 
-    public function ratings() {
+    public function ratings()
+    {
         return $this->hasMany(Rating::class);
     }
 
-    public function cartItems() {
+    public function cartItems()
+    {
         return $this->hasMany(CartItem::class);
     }
 }
