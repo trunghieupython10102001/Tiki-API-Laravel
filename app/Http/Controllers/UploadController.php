@@ -10,7 +10,10 @@ class UploadController extends Controller {
     public function uploadFile(Request $request)
     {
         if (!$request->hasFile('image')) {
-            
+            return response() -> json([
+                "status" => 404,
+                "message" => "Empty image"
+            ]);
         }
         $image = $request -> file("image");
         $storeFolder = "public/images";
