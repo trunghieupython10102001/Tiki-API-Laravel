@@ -68,6 +68,39 @@ class AuthController extends Controller
         ]);
     }
 
+    public function loginAdmin(Request $request)
+    {
+        $user = User::where('phone_number', $request->phone_number)->first();
+
+        if (!$user) {
+            return response()->json([
+                'status' => 400,
+                'message' => 'User does not exists'
+            ], 400);
+        }
+
+        $attr = $request->validate([
+            'phone_number' => 'required',
+            'password' => 'required'
+        ]);
+
+        if (!Auth::attempt($attr) || !$user->is_admin) {
+            return response()->json([
+                'status' => 401,
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'data'=> [
+                'token' => $user->createToken('API Token')->plainTextToken,
+                'expired_time' => 315360000
+            ],
+            'message' => 'Login successfully'
+        ]);
+    }
+
     public function logout(Request $request)
     {
         try {
