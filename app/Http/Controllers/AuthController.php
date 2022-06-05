@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Jobs\SendEmail;
 use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -98,6 +99,40 @@ class AuthController extends Controller
                 'expired_time' => 315360000
             ],
             'message' => 'Login successfully'
+        ]);
+    }
+
+    public function forgotPassword(Request $request) {
+        $user = User::where('phone_number', $request->phone_number)->first();
+
+        if (!$user) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'User does not exists'
+            ], 404);
+        }
+
+        if ($user->email != $request->email) {
+            return response()->json([
+                'status' => 400,
+                'message' => 'Wrong email'
+            ], 400);
+        }
+        
+        $resetPassword=env('DEFAULT_PASSWORD');
+        $user->password=bcrypt($resetPassword);
+        $user->save();
+
+        $message = [
+            'type' => 'Đặt lại mật khẩu',
+            'content' => "Mật khẩu của bạn đã được đặt lại về $resetPassword, vui lòng đăng nhập vào hệ thống và đổi lại mật khẩu để tránh mất tài khoản",
+        ];
+
+        SendEmail::dispatch($message, $user)->delay(now()->addMinute(1));
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Restore successfully'
         ]);
     }
 
