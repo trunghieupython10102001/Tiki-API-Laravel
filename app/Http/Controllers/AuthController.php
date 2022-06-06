@@ -123,12 +123,14 @@ class AuthController extends Controller
         $user->password=bcrypt($resetPassword);
         $user->save();
 
-        $message = [
-            'type' => 'Đặt lại mật khẩu',
-            'content' => "Mật khẩu của bạn đã được đặt lại về $resetPassword, vui lòng đăng nhập vào hệ thống và đổi lại mật khẩu để tránh mất tài khoản",
-        ];
+        if ($user->email) {
+            $message = [
+                'type' => 'Đặt lại mật khẩu',
+                'content' => "Mật khẩu của bạn đã được đặt lại về $resetPassword, vui lòng đăng nhập vào hệ thống và đổi lại mật khẩu để tránh mất tài khoản",
+            ];
 
-        SendEmail::dispatch($message, $user)->delay(now()->addMinute(1));
+            SendEmail::dispatch($message, $user)->delay(now()->addMinute(1));
+        }
 
         return response()->json([
             'status' => 200,
