@@ -102,6 +102,36 @@ class AuthController extends Controller
         ]);
     }
 
+    public function changePassword(Request $request) {
+        $user = User::where('phone_number', $request->phone_number)->first();
+
+        if (!$user) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'User does not exists'
+            ], 404);
+        }
+
+        $newPassword = $request->newPassword;
+        $confirmPassword = $request->confirmPassword;
+
+        if ($newPassword != $confirmPassword) {
+            return response()->json([
+                'status' => 400,
+                'message' => 'Password and confirm password does not match'
+            ], 400);
+        }
+
+        $user->password=bcrypt($newPassword);
+        $user->save();
+
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Change password successfully'
+        ]);
+    }
+
     public function forgotPassword(Request $request) {
         $user = User::where('phone_number', $request->phone_number)->first();
 

@@ -21,6 +21,7 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/admin/login', [AuthController::class, 'loginAdmin']);
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/forgotPassword', [AuthController::class, 'forgotPassword']);
+Route::post('/auth/change-password', [AuthController::class, 'changePassword']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/me', function (Request $request) {
