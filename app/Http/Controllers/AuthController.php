@@ -12,43 +12,9 @@ class AuthController extends Controller
 {
     use ApiResponser;
 
-    public function register(Request $request)
-    {
-        $user = User::where('phone_number', $request->phone_number)->first();
-        if ($user) {
-            return response()->json([
-                'status' => 400,
-                'message' => 'User already exists'
-            ]);
-        }
-
-        $attr = $request->validate([
-            'phone_number' => 'required|unique:users',
-            'password' => 'required'
-        ]);
-
-
-        $user1 = User::create([
-            'password' => bcrypt($attr['password']),
-            'phone_number' => $attr['phone_number']
-        ]);
-
-        return response()->json([
-            'status' => 201,
-            'message' => 'Register successfully'
-        ]);
-    }
-
     public function login(Request $request)
     {
         $user = User::where('phone_number', $request->phone_number)->first();
-
-        if (!$user) {
-            return response()->json([
-                'status' => 400,
-                'message' => 'User does not exists'
-            ]);
-        }
 
         $attr = $request->validate([
             'phone_number' => 'required',
@@ -58,15 +24,28 @@ class AuthController extends Controller
         if (!Auth::attempt($attr)) {
             return response()->json([
                 'status' => 401,
-                'message' => 'Unauthorized'
+                'message' => 'Invalid phone number or password'
             ]);
-        }
+        } else {
+            if (!$user) {
+                $newUser = User::create([
+                    'password' => bcrypt($attr['password']),
+                    'phone_number' => $attr['phone_number']
+                ]);
 
-        return response()->json([
-            'status' => 200,
-            'accessToken' => $user->createToken('API Token')->plainTextToken,
-            'message' => 'Login successfully'
-        ]);
+                return response()->json([
+                    'status' => 201,
+                    'accessToken' => $newUser->createToken('API Token')->plainTextToken,
+                    'message' => 'Create user successfully'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 200,
+                    'accessToken' => $user->createToken('API Token')->plainTextToken,
+                    'message' => 'Login successfully'
+                ]);
+            }
+        }
     }
 
     public function loginAdmin(Request $request)
@@ -94,7 +73,7 @@ class AuthController extends Controller
 
         return response()->json([
             'status' => 200,
-            'data'=> [
+            'data' => [
                 'token' => $user->createToken('API Token')->plainTextToken,
                 'expired_time' => 315360000
             ],
@@ -102,7 +81,8 @@ class AuthController extends Controller
         ]);
     }
 
-    public function changePassword(Request $request) {
+    public function changePassword(Request $request)
+    {
         $user = User::where('phone_number', $request->phone_number)->first();
 
         if (!$user) {
@@ -122,7 +102,7 @@ class AuthController extends Controller
             ], 400);
         }
 
-        $user->password=bcrypt($newPassword);
+        $user->password = bcrypt($newPassword);
         $user->save();
 
 
@@ -132,7 +112,8 @@ class AuthController extends Controller
         ]);
     }
 
-    public function forgotPassword(Request $request) {
+    public function forgotPassword(Request $request)
+    {
         $user = User::where('phone_number', $request->phone_number)->first();
 
         if (!$user) {
@@ -148,9 +129,9 @@ class AuthController extends Controller
                 'message' => 'Wrong email'
             ], 400);
         }
-        
-        $resetPassword=env('DEFAULT_PASSWORD');
-        $user->password=bcrypt($resetPassword);
+
+        $resetPassword = env('DEFAULT_PASSWORD');
+        $user->password = bcrypt($resetPassword);
         $user->save();
 
         if ($user->email) {
