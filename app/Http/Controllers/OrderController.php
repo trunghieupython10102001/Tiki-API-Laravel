@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
+use App\Http\Resources\OrderResource;
 
 class OrderController extends Controller
 {
@@ -15,7 +16,11 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        $limit = request()->limit ?? 100;
+        $sort_by = request()->sort_by ?? 'created_at';
+        $order_by = request()->order_by ?? 'asc';
+
+        return OrderResource::collection(Order::orderBy($sort_by, $order_by)->paginate($limit));
     }
 
     /**
@@ -26,7 +31,11 @@ class OrderController extends Controller
      */
     public function store(StoreOrderRequest $request)
     {
-        //
+        Order::create($request->all());
+        return response()->json([
+            'status' => 201,
+            'message' => 'Create order successfully',
+        ]);
     }
 
     /**
@@ -35,9 +44,17 @@ class OrderController extends Controller
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function show(Order $order)
+    public function show($orderId)
     {
-        //
+        $order = Order::find($orderId);
+        if (!$order) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Order not found'
+            ], 404);
+        }
+
+        return new OrderResource($order);
     }
 
     /**
@@ -49,17 +66,5 @@ class OrderController extends Controller
      */
     public function update(UpdateOrderRequest $request, Order $order)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Order $order)
-    {
-        //
     }
 }

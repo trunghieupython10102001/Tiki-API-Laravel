@@ -64,8 +64,12 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        $product = Product::create($request->all());
-        return new ProductResource($product);
+        Product::create($request->all());
+
+        return response()->json([
+            'status' => 201,
+            'message' => 'Create product successfully',
+        ]);
     }
 
     /**
@@ -84,7 +88,10 @@ class ProductController extends Controller
             ], 404);
         }
 
-        return new ProductResource($product);
+        return response()->json([
+            'status' => 200,
+            'message' => 'Get product successfully',
+        ]);
     }
 
     /**

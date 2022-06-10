@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('order_date');
             $table->string('recipient_name');
             $table->string('payment_method');
+            $table->string('note')->nullable();
             $table->bigInteger('ship_fee')->default(20000);
 
             $table->foreignId('user_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
