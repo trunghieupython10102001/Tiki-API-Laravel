@@ -20,7 +20,7 @@ class CategoryController extends Controller
         $sort_by = request()->sort_by ?? 'created_at';
         $order_by = request()->order_by ?? 'asc';
 
-        return CategoryResource::collection(Category::orderBy($sort_by, $order_by)->paginate($limit));
+        return CategoryResource::collection(Category::withCount('products')->orderBy($sort_by, $order_by)->paginate($limit));
     }
 
     /**
@@ -31,11 +31,10 @@ class CategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request)
     {
-        $category = Category::create($request->all());
+        Category::create($request->all());
         return response()->json([
             'status' => 201,
-            'message' => 'Create category successfully',
-            'category' => $category
+            'message' => 'Create category successfully'
         ]);
     }
 
@@ -78,8 +77,7 @@ class CategoryController extends Controller
         $category->update($request->all());
         return response()->json([
             'status' => 200,
-            'message' => 'Update category successfully',
-            'category' => $category
+            'message' => 'Update category successfully'
         ]);
     }
 
