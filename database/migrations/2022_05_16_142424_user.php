@@ -18,11 +18,11 @@ return new class extends Migration
             $table->string('phone_number')->unique();
             $table->string('email')->unique()->nullable();
             $table->date('birthday')->nullable();
-            $table->date('name')->nullable();
             $table->string('address')->nullable();
             $table->boolean('gender')->nullable();
             $table->string('avatar_url')->nullable();
             $table->string('nick_name')->nullable();
+            $table->string('username')->nullable();
             $table->string('password');
             $table->boolean('is_admin')->nullable();
             $table->timestamps();
