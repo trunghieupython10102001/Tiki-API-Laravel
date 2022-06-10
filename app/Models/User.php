@@ -15,7 +15,7 @@ class User extends Authenticatable
     protected $fillable = [
         'phone_number',
         'password',
-        'name',
+        'username',
         'email',
         'nick_name',
         'birthday',
@@ -26,7 +26,6 @@ class User extends Authenticatable
 
     protected $hidden = [
         'password',
-        'remember_token',
     ];
 
     // one to many relationship
