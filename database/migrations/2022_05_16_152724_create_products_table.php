@@ -22,6 +22,7 @@ return new class extends Migration
             $table->integer('sold');
             $table->string('description');
             $table->float('sale_percent');
+            $table->float('price');
             $table->foreignId('category_id')->constrained('categories')->onUpdate('cascade')->onDelete('cascade');
 
             $table->timestamps();
