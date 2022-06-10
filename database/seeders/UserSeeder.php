@@ -27,7 +27,7 @@ class UserSeeder extends Seeder
                 'nick_name' => '',
                 'username' => 'Ngô Việt Hoàng',
                 'nick_name' => '',
-                'password' => '123',
+                'password' => bcrypt('123'),
                 'is_admin' => 1
             ],
             [
@@ -40,7 +40,7 @@ class UserSeeder extends Seeder
                 'nick_name' => '',
                 'username' => 'Phí Trung Hiếu',
                 'nick_name' => '',
-                'password' => '123',
+                'password' => bcrypt('123'),
                 'is_admin' => 0
             ],
             [
@@ -53,7 +53,7 @@ class UserSeeder extends Seeder
                 'nick_name' => '',
                 'username' => 'Phạm Minh Hiếu',
                 'nick_name' => '',
-                'password' => '123',
+                'password' => bcrypt('123'),
                 'is_admin' => 0
             ],
         ]);

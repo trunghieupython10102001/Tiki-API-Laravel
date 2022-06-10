@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UploadController;
 use Illuminate\Http\Request;
@@ -29,10 +31,16 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
 
     Route::post('/auth/logout', [AuthController::class, 'logout']);
-    
-    Route::get('/user/{userId}', [UserController::class, 'getUser']);
-    
+
+    // user api
+    Route::get('/user/category', [UserController::class, 'getCategories']);
+    Route::get('/user/category/{categoryId}', [UserController::class, 'getCategory']);
+    Route::get('/user/dashboard', [UserController::class, 'getDashboard']);
     Route::put('/user/update/{userId}', [UserController::class, 'updateUser']);
+    Route::get('/user/cart/{userId}', [UserController::class, 'getCart']);
+    Route::get('/user/{userId}', [UserController::class, 'getUser']);
 
     Route::post('/upload', [UploadController::class, 'uploadFile']);
+    Route::apiResource('/products', ProductController::class);
+    Route::apiResource('/categories', CategoryController::class);
 });

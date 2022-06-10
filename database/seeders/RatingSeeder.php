@@ -17,19 +17,40 @@ class RatingSeeder extends Seeder
     {
         DB::table('ratings')->insert([
             [
-                'rating' => 5,
+                'rating' => 4,
                 'comment' => 'This is a comment',
 
                 'user_id' => 1,
                 'product_id' => 1,
             ],
             [
-                'rating' => 4.5,
+                'rating' => 3,
+                'comment' => 'This is a comment',
+
+                'user_id' => 1,
+                'product_id' => 1,
+            ],
+            [
+                'rating' => 3,
                 'comment' => 'This is a comment 2',
 
                 'user_id' => 2,
                 'product_id' => 2,
-            ]
+            ],
+            [
+                'rating' => 3,
+                'comment' => 'This is a comment 2',
+
+                'user_id' => 2,
+                'product_id' => 3,
+            ],
+            [
+                'rating' => 3,
+                'comment' => 'This is a comment 2',
+
+                'user_id' => 2,
+                'product_id' => 1,
+            ],
         ]);
     }
 }

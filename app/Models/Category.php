@@ -13,7 +13,6 @@ class Category extends Model
         'name',
         'description',
         'image_url',
-        'slug',
     ];
 
     public function products()
