@@ -20,9 +20,9 @@ return new class extends Migration
             $table->string('thumbnail_url');
             $table->integer('quantity');
             $table->integer('sold');
-            $table->string('description');
+            $table->text('description');
             $table->float('sale_percent');
-            $table->float('price');
+            $table->bigInteger('price');
             $table->foreignId('category_id')->constrained('categories')->onUpdate('cascade')->onDelete('cascade');
 
             $table->timestamps();

@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('description');
+            $table->string('name')->unique();
+            $table->text('description');
             $table->string('image_url');
-            $table->string('slug');
+            $table->string('slug')->unique();
 
             $table->timestamps();
         });
