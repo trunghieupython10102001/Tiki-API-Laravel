@@ -38,8 +38,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/user/{userId}', [UserController::class, 'getUser']);
 
     Route::post('/upload', [UploadController::class, 'uploadFile']);
-    Route::apiResource('/products', ProductController::class);
-    Route::apiResource('/categories', CategoryController::class);
+
+    Route::apiResource('/products', ProductController::class)->except('update');
+    Route::post('/products/{productId}', [ProductController::class, 'update']);
+
+    Route::apiResource('/categories', CategoryController::class)->except('update');
+    Route::post('/categories/{categoryId}', [CategoryController::class, 'update']);
+
     Route::apiResource('/orders', OrderController::class)->except('destroy');
     Route::apiResource('/ratings', RatingController::class);
 });

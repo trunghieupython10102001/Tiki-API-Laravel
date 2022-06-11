@@ -40,7 +40,11 @@ class RatingController extends Controller
      */
     public function store(StoreRatingRequest $request)
     {
-        //
+        Rating::create($request->all());
+
+        return response()->json([
+            'message' => 'Tạo đánh giá thành công',
+        ], 201);
     }
 
     /**

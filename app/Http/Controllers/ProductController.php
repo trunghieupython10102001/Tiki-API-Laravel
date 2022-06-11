@@ -29,7 +29,7 @@ class ProductController extends Controller
         $price_to = request()->price_to ?? 10000000000000000000;
         $search = request()->search ?? '';
         $search_type = request()->search_type ?? 'name';
-        $from = request()->from ?? null;
+        $from = request()->from ?? '0';
         $to = request()->to ?? '9000-12-12';
 
         $category_id = request()->category_id ?? null;
@@ -71,7 +71,17 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        Product::create($request->all());
+        $all = $request->all();
+
+        if ($request->hasFile('thumbnail_url')) {
+            $ext = $request->file('thumbnail_url')->extension();
+            $generate_unique_file_name = md5(time()) . '.' . $ext;
+            $request->file('thumbnail_url')->move('images', $generate_unique_file_name, 'local');
+
+            $all['thumbnail_url'] = 'images/' . $generate_unique_file_name;
+        }
+
+        Product::create($all);
 
         return response()->json([
             'status' => 201,
@@ -139,7 +149,26 @@ class ProductController extends Controller
             ], 404);
         }
 
-        $product->update($request->all());
+        $all = $request->all();
+
+        if ($request->hasFile('thumbnail_url')) {
+            $ext = $request->file('thumbnail_url')->extension();
+            $generate_unique_file_name = md5(time()) . '.' . $ext;
+            $request->file('thumbnail_url')->move('images', $generate_unique_file_name, 'local');
+
+            $all['thumbnail_url'] = 'images/' . $generate_unique_file_name;
+
+            // delete old image in system
+            if ($product->thumbnail_url) {
+                $old_image = $product->thumbnail_url;
+                $old_image_path = public_path($old_image);
+                if (file_exists($old_image_path)) {
+                    unlink($old_image_path);
+                }
+            }
+        }
+
+        $product->update($all);
         return response()->json([
             'status' => 200,
             'message' => 'Cập nhật sản phẩm thành công',

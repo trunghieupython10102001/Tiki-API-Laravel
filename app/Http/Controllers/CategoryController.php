@@ -38,10 +38,20 @@ class CategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request)
     {
+        $all = $request->all();
+
+        if ($request->hasFile('image_url')) {
+            $ext = $request->file('image_url')->extension();
+            $generate_unique_file_name = md5(time()) . '.' . $ext;
+            $request->file('image_url')->move('images', $generate_unique_file_name, 'local');
+
+            $all['image_url'] = 'images/' . $generate_unique_file_name;
+        }
+
         Category::create($request->all());
         return response()->json([
             'status' => 201,
-            'message' => 'Create category successfully'
+            'message' => 'Thêm mới danh mục thành công'
         ]);
     }
 
@@ -57,7 +67,7 @@ class CategoryController extends Controller
         if (!$category) {
             return response()->json([
                 'status' => 404,
-                'message' => 'Category not found'
+                'message' => 'Không tìm thấy danh mục'
             ], 404);
         }
 
@@ -77,14 +87,33 @@ class CategoryController extends Controller
         if (!$category) {
             return response()->json([
                 'status' => 404,
-                'message' => 'Category not found'
+                'message' => 'Không tìm thấy danh mục'
             ], 404);
         }
 
-        $category->update($request->all());
+        $all = $request->all();
+
+        if ($request->hasFile('image_url')) {
+            $ext = $request->file('image_url')->extension();
+            $generate_unique_file_name = md5(time()) . '.' . $ext;
+            $request->file('image_url')->move('images', $generate_unique_file_name, 'local');
+
+            $all['image_url'] = 'images/' . $generate_unique_file_name;
+
+            // delete old image in system
+            if ($category->image_url) {
+                $old_image = $category->image_url;
+                $old_image_path = public_path($old_image);
+                if (file_exists($old_image_path)) {
+                    unlink($old_image_path);
+                }
+            }
+        }
+
+        $category->update($all);
         return response()->json([
             'status' => 200,
-            'message' => 'Update category successfully'
+            'message' => 'Cập nhật danh mục thành công'
         ]);
     }
 
@@ -102,7 +131,7 @@ class CategoryController extends Controller
         if (!$category) {
             return response()->json([
                 'status' => 404,
-                'message' => 'Category not found'
+                'message' => 'Không tìm thấy danh mục'
             ], 404);
         }
 
@@ -110,7 +139,7 @@ class CategoryController extends Controller
 
         return response()->json([
             'status' => 200,
-            'message' => 'Category deleted'
+            'message' => 'Xóa danh mục thành công'
         ], 200);
     }
 }
