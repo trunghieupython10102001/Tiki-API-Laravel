@@ -9,6 +9,8 @@ class Product extends Model
 {
     use HasFactory;
 
+    public $appends = ['avg_ratings', 'discount'];
+
     protected $fillable = [
         'name',
         'brand',
@@ -21,6 +23,32 @@ class Product extends Model
 
         'category_id',
     ];
+
+    protected $hidden = [
+        'ratings',
+    ];
+
+    public function getAvgRatingsAttribute()
+    {
+        $ratings = $this->ratings;
+        $total = 0;
+        foreach ($ratings as $rating) {
+            $total += $rating->rating;
+        }
+
+        $count = $ratings->count();
+
+        if ($count == 0) {
+            return 0;
+        }
+
+        return $total / $count;
+    }
+
+    public function getDiscountAttribute()
+    {
+        return $this->price * (1 - $this->sale_percent / 100);
+    }
 
     public function cartItems()
     {

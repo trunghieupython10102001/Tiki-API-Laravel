@@ -35,11 +35,14 @@ class ProductController extends Controller
             return ProductResource::collection(Product::where('category_id', $category_id)->orderBy($sort_by, $order_by)->paginate($limit));
         }
 
-        $data = Product::whereBetween('price', [$price_from, $price_to])
+        $data = Product::withCount('ratings')
+            ->whereBetween('price', [$price_from, $price_to])
             ->whereBetween('created_at', [$from, $to])
             ->where($search_type, 'like', '%' . $search . '%')
             ->orderBy($sort_by, $order_by)
             ->paginate($limit);
+
+        // $data = $data->where('avg_ratings', '>=', $rating);
 
         // if ($rating) {
         //     $data = $data->filter(function ($item) use ($rating) {
@@ -51,11 +54,9 @@ class ProductController extends Controller
 
         // if ($random) {
         //     $data = $data->shuffle();
-        //     $res_data['data'] = $data;
         // }
 
         return ProductResource::collection($data);
-        // return ProductResource::collection($data);
     }
 
     /**
@@ -70,7 +71,7 @@ class ProductController extends Controller
 
         return response()->json([
             'status' => 201,
-            'message' => 'Create product successfully',
+            'message' => 'Thêm mới sản phẩm thành công',
         ]);
     }
 
@@ -82,17 +83,23 @@ class ProductController extends Controller
      */
     public function show($productId)
     {
-        $product = Product::find($productId);
+        $product = Product::withCount('ratings')->find($productId);
+
         if (!$product) {
             return response()->json([
                 'status' => 404,
-                'message' => 'Product not found'
+                'message' => 'Không tìm thấy sản phẩm'
             ], 404);
         }
 
+        $product->rating_1 = $product->ratings->where('rating', 1)->count();
+        $product->rating_2 = $product->ratings->where('rating', 2)->count();
+        $product->rating_3 = $product->ratings->where('rating', 3)->count();
+        $product->rating_4 = $product->ratings->where('rating', 4)->count();
+        $product->rating_5 = $product->ratings->where('rating', 5)->count();
+
         return response()->json([
             'status' => 200,
-            'message' => 'Get product successfully',
             'data' => $product,
         ]);
     }
@@ -112,14 +119,14 @@ class ProductController extends Controller
         if (!$product) {
             return response()->json([
                 'status' => 404,
-                'message' => 'Product not found'
+                'message' => 'Không tìm thấy sản phẩm'
             ], 404);
         }
 
         $product->update($request->all());
         return response()->json([
             'status' => 200,
-            'message' => 'Update product successfully',
+            'message' => 'Cập nhật sản phẩm thành công',
         ]);
     }
 
@@ -135,7 +142,7 @@ class ProductController extends Controller
         if (!$product) {
             return response()->json([
                 'status' => 404,
-                'message' => 'Product not found'
+                'message' => 'Không tìm thấy sản phẩm'
             ], 404);
         }
 
@@ -145,7 +152,7 @@ class ProductController extends Controller
 
         return response()->json([
             'status' => 200,
-            'message' => 'Product deleted'
+            'message' => 'Xóa sản phẩm thành công'
         ]);
     }
 }

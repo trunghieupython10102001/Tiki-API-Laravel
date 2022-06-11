@@ -20,8 +20,8 @@ class RatingController extends Controller
         $sort_by = request()->sort_by ?? 'created_at';
         $order_by = request()->order_by ?? 'asc';
 
-        $product_id = request()->product_id ?? 'asc';
-        $rating = request()->rating ?? 'asc';
+        $product_id = request()->product_id ?? null;
+        $rating = request()->rating ?? 0;
 
         $data = Rating::with('user')
             ->where('product_id', $product_id)

@@ -18,12 +18,12 @@ return new class extends Migration
             $table->string('name');
             $table->string('brand')->nullable();
             $table->string('thumbnail_url')->nullable();
-            $table->integer('quantity')->nullable();
-            $table->integer('sold')->nullable();
+            $table->integer('quantity')->nullable()->default(0);
+            $table->integer('sold')->nullable()->default(0);
             $table->text('description')->nullable();
             $table->text('specifications')->nullable();
-            $table->float('sale_percent')->nullable();
-            $table->bigInteger('price')->nullable();
+            $table->float('sale_percent')->nullable()->default(0);
+            $table->bigInteger('price')->nullable()->default(0);
             $table->foreignId('category_id')->constrained('categories')->onUpdate('cascade')->onDelete('cascade');
 
             $table->timestamps();
