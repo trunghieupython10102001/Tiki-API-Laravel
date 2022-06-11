@@ -26,13 +26,27 @@ class ProductController extends Controller
         $price_to = request()->price_to ?? 10000000000000000000;
         $search = request()->search ?? '';
         $search_type = request()->search_type ?? 'name';
-        $from = request()->from ?? 0;
+        $from = request()->from ?? null;
         $to = request()->to ?? '9000-12-12';
 
         $category_id = request()->category_id ?? null;
 
         if ($category_id) {
             return ProductResource::collection(Product::where('category_id', $category_id)->orderBy($sort_by, $order_by)->paginate($limit));
+        }
+
+        if ($rating != null) {
+            $data = Product::all()->where('avg_ratings', '>=', $rating);
+
+            $data = $data->slice(0, $limit);
+
+            return ProductResource::collection($data);
+        }
+
+        if ($random) {
+            $data = Product::inRandomOrder()->limit($limit)->get();
+
+            return ProductResource::collection($data);
         }
 
         $data = Product::withCount('ratings')
@@ -42,19 +56,6 @@ class ProductController extends Controller
             ->orderBy($sort_by, $order_by)
             ->paginate($limit);
 
-        // $data = $data->where('avg_ratings', '>=', $rating);
-
-        // if ($rating) {
-        //     $data = $data->filter(function ($item) use ($rating) {
-        //         return $item->ratings->avg('rating') >= $rating;
-        //     });
-
-        //     $res_data['data'] = $data;
-        // }
-
-        // if ($random) {
-        //     $data = $data->shuffle();
-        // }
 
         return ProductResource::collection($data);
     }
