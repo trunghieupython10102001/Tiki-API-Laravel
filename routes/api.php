@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\RatingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UploadController;
 use Illuminate\Http\Request;
@@ -39,5 +40,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/upload', [UploadController::class, 'uploadFile']);
     Route::apiResource('/products', ProductController::class);
     Route::apiResource('/categories', CategoryController::class);
-    Route::apiResource('/orders', OrderController::class);
+    Route::apiResource('/orders', OrderController::class)->except('destroy');
+    Route::apiResource('/ratings', RatingController::class);
 });

@@ -42,7 +42,7 @@ class RatingSeeder extends Seeder
                 'comment' => 'This is a comment 2',
 
                 'user_id' => 2,
-                'product_id' => 3,
+                'product_id' => 1,
             ],
             [
                 'rating' => 3,
