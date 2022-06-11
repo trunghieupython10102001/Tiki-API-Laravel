@@ -35,7 +35,12 @@ class ProductController extends Controller
         $category_id = request()->category_id ?? null;
 
         if ($category_id) {
-            return ProductResource::collection(Product::where('category_id', $category_id)->orderBy($sort_by, $order_by)->paginate($limit));
+            $products = Product::where('category_id', $category_id)
+                                ->whereBetween('price', [$price_from, $price_to])
+                                ->orderBy($sort_by, $order_by)
+                                ->paginate($limit);
+
+            return ProductResource::collection($products);
         }
 
         if ($rating != null) {

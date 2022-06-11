@@ -27,6 +27,11 @@ Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/forgotPassword', [AuthController::class, 'forgotPassword']);
 Route::post('/auth/change-password', [AuthController::class, 'changePassword']);
 
+Route::apiResource('/orders', OrderController::class)->except('destroy', 'update', 'create');
+Route::apiResource('/ratings', RatingController::class)->except('destroy', 'update', 'create');
+Route::apiResource('/products', ProductController::class)->except('destroy', 'update', 'create');
+Route::apiResource('/categories', CategoryController::class)->except('destroy', 'update', 'create');
+
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/me', function (Request $request) {
         return auth()->user();
@@ -39,12 +44,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::post('/upload', [UploadController::class, 'uploadFile']);
 
-    Route::apiResource('/products', ProductController::class)->except('update');
+    Route::apiResource('/products', ProductController::class)->except('update', 'index', 'show');
     Route::post('/products/{productId}', [ProductController::class, 'update']);
 
-    Route::apiResource('/categories', CategoryController::class)->except('update');
+    Route::apiResource('/categories', CategoryController::class)->except('update', 'index', 'show');
     Route::post('/categories/{categoryId}', [CategoryController::class, 'update']);
 
-    Route::apiResource('/orders', OrderController::class)->except('destroy');
-    Route::apiResource('/ratings', RatingController::class);
+    Route::apiResource('/orders', OrderController::class)->except('destroy', 'index', 'show');
+    Route::apiResource('/ratings', RatingController::class)->except('index', 'show');
 });
