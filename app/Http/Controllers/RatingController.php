@@ -23,7 +23,8 @@ class RatingController extends Controller
         $product_id = request()->product_id ?? 'asc';
         $rating = request()->rating ?? 'asc';
 
-        $data = Rating::where('product_id', $product_id)
+        $data = Rating::with('user')
+            ->where('product_id', $product_id)
             ->where('rating', '>=', $rating)
             ->orderBy($sort_by, $order_by)
             ->paginate($limit);
