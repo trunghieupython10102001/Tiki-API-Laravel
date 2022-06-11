@@ -26,6 +26,8 @@ class ProductSeeder extends Seeder
                 'sale_percent' => 20,
                 'price' => 20490000,
                 'category_id' => 1,
+                'created_at' => '2022-07-10',
+                'updated_at' => '2022-07-10',
             ],
             [
                 'name' => 'Điện Thoại iPhone 13 128GB  - Hàng  Chính Hãng',
@@ -37,6 +39,8 @@ class ProductSeeder extends Seeder
                 'sale_percent' => 20,
                 'price' => 20490000,
                 'category_id' => 2,
+                'created_at' => '2022-05-10',
+                'updated_at' => '2022-05-10',
             ],
             [
                 'name' => 'lorem',
@@ -48,6 +52,8 @@ class ProductSeeder extends Seeder
                 'sale_percent' => 20,
                 'price' => 200,
                 'category_id' => 2,
+                'created_at' => '2022-04-10',
+                'updated_at' => '2022-04-10',
             ],
             [
                 'name' => 'test',
@@ -59,6 +65,8 @@ class ProductSeeder extends Seeder
                 'sale_percent' => 20,
                 'price' => 20490000,
                 'category_id' => 2,
+                'created_at' => '2022-03-10',
+                'updated_at' => '2022-03-10',
             ]
         ]);
     }

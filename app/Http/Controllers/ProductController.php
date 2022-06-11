@@ -21,10 +21,13 @@ class ProductController extends Controller
         $order_by = request()->order_by ?? 'asc';
 
         $rating = request()->rating ?? 0;
-        $from = request()->from ?? 0;
-        $to = request()->to ?? 10000000000000000000;
-        $search = request()->search ?? '';
         $random = request()->random ?? 0;
+        $price_from = request()->price_from ?? 0;
+        $price_to = request()->price_to ?? 10000000000000000000;
+        $search = request()->search ?? '';
+        $search_type = request()->search_type ?? 'name';
+        $from = request()->from ?? 0;
+        $to = request()->to ?? '9000-12-12';
 
         $category_id = request()->category_id ?? null;
 
@@ -32,10 +35,9 @@ class ProductController extends Controller
             return ProductResource::collection(Product::where('category_id', $category_id)->orderBy($sort_by, $order_by)->paginate($limit));
         }
 
-        $data = Product::with('ratings')
-            ->where('price', '>=', $from)
-            ->where('price', '<=', $to)
-            ->where('name', 'like', '%' . $search . '%')
+        $data = Product::whereBetween('price', [$price_from, $price_to])
+            ->whereBetween('created_at', [$from, $to])
+            ->where($search_type, 'like', '%' . $search . '%')
             ->orderBy($sort_by, $order_by)
             ->paginate($limit);
 

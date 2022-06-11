@@ -20,7 +20,14 @@ class CategoryController extends Controller
         $sort_by = request()->sort_by ?? 'created_at';
         $order_by = request()->order_by ?? 'asc';
 
-        return CategoryResource::collection(Category::withCount('products')->orderBy($sort_by, $order_by)->paginate($limit));
+        $search = request()->search ?? null;
+
+        return CategoryResource::collection(
+            Category::withCount('products')
+                ->where('name', 'like', '%' . $search . '%')
+                ->orderBy($sort_by, $order_by)
+                ->paginate($limit)
+        );
     }
 
     /**
