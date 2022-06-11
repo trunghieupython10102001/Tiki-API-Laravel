@@ -20,7 +20,24 @@ class OrderController extends Controller
         $sort_by = request()->sort_by ?? 'created_at';
         $order_by = request()->order_by ?? 'asc';
 
-        return OrderResource::collection(Order::orderBy($sort_by, $order_by)->paginate($limit));
+        $phone_number = request()->phone_number ?? '';
+        $id = request()->id ?? '';
+        $status = request()->status ?? '';
+        $recipient_name = request()->recipient_name ?? '';
+        $user_id = request()->user_id ?? null;
+
+        if ($user_id) {
+            return OrderResource::collection(Order::where('user_id', $user_id)->orderBy($sort_by, $order_by)->paginate($limit));
+        }
+
+        $data = Order::where('id', 'like', '%' . $id . '%')
+            ->where('phone_number', 'like', '%' . $phone_number . '%')
+            ->where('status', 'like', '%' . $status . '%')
+            ->where('recipient_name', 'like', '%' . $recipient_name . '%')
+            ->orderBy($sort_by, $order_by)
+            ->paginate($limit);
+
+        return OrderResource::collection($data);
     }
 
     /**
@@ -34,7 +51,7 @@ class OrderController extends Controller
         Order::create($request->all());
         return response()->json([
             'status' => 201,
-            'message' => 'Create order successfully',
+            'message' => 'Tạo đơn hàng thành công',
         ]);
     }
 
@@ -50,7 +67,7 @@ class OrderController extends Controller
         if (!$order) {
             return response()->json([
                 'status' => 404,
-                'message' => 'Order not found'
+                'message' => 'Không tìm thấy đơn hàng'
             ], 404);
         }
 
@@ -70,7 +87,7 @@ class OrderController extends Controller
         if (!$order) {
             return response()->json([
                 'status' => 404,
-                'message' => 'Order not found'
+                'message' => 'Không tìm thấy đơn hàng'
             ], 404);
         }
 
