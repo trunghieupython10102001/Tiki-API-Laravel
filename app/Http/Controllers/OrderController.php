@@ -64,7 +64,35 @@ class OrderController extends Controller
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateOrderRequest $request, Order $order)
+    public function update(UpdateOrderRequest $request, $orderId)
     {
+        $order = Order::find($orderId);
+        if (!$order) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Order not found'
+            ], 404);
+        }
+
+        if (!$request->has('status')) {
+            return response()->json([
+                'status' => 400,
+                'message' => 'Thiếu tham số status'
+            ], 400);
+        }
+
+        if (strtolower($order->status) != 'processing') {
+            return response()->json([
+                'status' => 400,
+                'message' => 'Không thể thay đổi trạng thái'
+            ], 400);
+        }
+
+        $order->status = $request->status;
+        $order->save();
+        return response()->json([
+            'status' => 200,
+            'message' => 'Cập nhật trạng thái thành công'
+        ], 200);
     }
 }

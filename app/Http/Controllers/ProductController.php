@@ -91,6 +91,7 @@ class ProductController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'Get product successfully',
+            'data' => $product,
         ]);
     }
 
@@ -114,7 +115,10 @@ class ProductController extends Controller
         }
 
         $product->update($request->all());
-        return new ProductResource($product);
+        return response()->json([
+            'status' => 200,
+            'message' => 'Update product successfully',
+        ]);
     }
 
     /**
