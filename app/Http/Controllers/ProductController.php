@@ -6,6 +6,9 @@ use App\Models\Product;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\User;
 
 class ProductController extends Controller
 {
@@ -84,6 +87,8 @@ class ProductController extends Controller
      */
     public function show($productId)
     {
+        $user_id = request()->user_id ?? null;
+
         $product = Product::withCount('ratings')->find($productId);
 
         if (!$product) {
@@ -98,6 +103,16 @@ class ProductController extends Controller
         $product->rating_3 = $product->ratings->where('rating', 3)->count();
         $product->rating_4 = $product->ratings->where('rating', 4)->count();
         $product->rating_5 = $product->ratings->where('rating', 5)->count();
+
+        if ($user_id) {
+            $is_buy = Order::with('orderItems')->where('user_id', $user_id)->whereHas('orderItems', function ($query) use ($productId) {
+                $query->where('product_id', $productId);
+            })->count();
+
+            if ($is_buy > 0) {
+                $product->commentable = true;
+            }
+        }
 
         return response()->json([
             'status' => 200,
