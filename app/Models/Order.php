@@ -20,6 +20,19 @@ class Order extends Model
         'user_id'
     ];
 
+    protected $appends = ['discount'];
+
+    public function getDiscountAttribute()
+    {
+        // amount in orderItems multi with discount in orderItems.product.discount
+        $discount = 0;
+        foreach ($this->orderItems as $orderItem) {
+            $discount += $orderItem->product->discount * $orderItem->amount;
+        }
+
+        return $discount;
+    }
+
     // get user that owns order
     public function user()
     {

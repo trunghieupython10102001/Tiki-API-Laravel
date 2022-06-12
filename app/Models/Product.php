@@ -48,7 +48,8 @@ class Product extends Model
 
     public function getDiscountAttribute()
     {
-        return $this->price * (1 - $this->sale_percent / 100);
+        // return $this->price * (1 - $this->sale_percent / 100);
+        return $this->price * ($this->sale_percent / 100);
     }
 
     public function cartItems()
