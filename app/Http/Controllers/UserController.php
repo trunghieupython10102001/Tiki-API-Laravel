@@ -18,13 +18,14 @@ class UserController extends Controller
         return UserResource::collection($users);
     }
 
-    public function getUser($userId)
+    public function getUser(Request $request, $userId)
     {
+        $requestUser = $request->user();
         $user = User::where('id', $userId)->first();
-        if (!$user->is_admin) {
+        if (!$requestUser->is_admin && $requestUser->id != $user->id) {
             return response()->json([
                 'status' => 401,
-                'message' => 'Unauthorized'
+                'message' => 'Unauthorized',
             ]);
         }
         return response()->json([
