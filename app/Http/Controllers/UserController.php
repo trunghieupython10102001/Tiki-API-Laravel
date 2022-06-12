@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -9,9 +10,12 @@ class UserController extends Controller
 {
     public function getUsers()
     {
-        return response()->json([
-            'users' => User::all()
-        ]);
+        $limit = request()->limit ?? 100;
+        $sort_by = request()->sort_by ?? 'created_at';
+        $order_by = request()->order_by ?? 'asc';
+
+        $users = User::where('is_admin', '!=', 1)->orderBy($sort_by, $order_by)->paginate($limit);
+        return UserResource::collection($users);
     }
 
     public function getUser($userId)

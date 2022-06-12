@@ -27,10 +27,11 @@ class OrderController extends Controller
         $user_id = request()->user_id ?? null;
 
         if ($user_id) {
-            return OrderResource::collection(Order::where('user_id', $user_id)->orderBy($sort_by, $order_by)->paginate($limit));
+            return OrderResource::collection(Order::with('orderItems.product')->where('user_id', $user_id)->orderBy($sort_by, $order_by)->paginate($limit));
         }
 
-        $data = Order::where('id', 'like', '%' . $id . '%')
+        $data = Order::with('orderItems.product')
+            ->where('id', 'like', '%' . $id . '%')
             ->where('phone_number', 'like', '%' . $phone_number . '%')
             ->where('status', 'like', '%' . $status . '%')
             ->where('recipient_name', 'like', '%' . $recipient_name . '%')

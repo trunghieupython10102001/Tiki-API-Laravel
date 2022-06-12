@@ -27,6 +27,8 @@ Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/forgotPassword', [AuthController::class, 'forgotPassword']);
 Route::post('/auth/change-password', [AuthController::class, 'changePassword']);
 
+Route::get('/user', [UserController::class, 'getUsers']);
+
 Route::apiResource('/orders', OrderController::class)->except('destroy', 'update', 'create');
 Route::apiResource('/ratings', RatingController::class)->except('destroy', 'update', 'create');
 Route::apiResource('/products', ProductController::class)->except('destroy', 'update', 'create');

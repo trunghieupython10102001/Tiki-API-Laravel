@@ -22,6 +22,7 @@ class User extends Authenticatable
         'address',
         'gender',
         'avatar_url',
+        'is_admin'
     ];
 
     protected $hidden = [
