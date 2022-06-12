@@ -99,7 +99,7 @@ class OrderController extends Controller
             ], 400);
         }
 
-        if (strtolower($order->status) != 'processing') {
+        if (strtolower($order->status) == 'complete' || strtolower($order->status) == 'cancel') {
             return response()->json([
                 'status' => 400,
                 'message' => 'Không thể thay đổi trạng thái'
