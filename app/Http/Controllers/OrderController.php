@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Http\Resources\OrderResource;
+use Carbon\Carbon;
 
 class OrderController extends Controller
 {
@@ -39,6 +40,37 @@ class OrderController extends Controller
             ->paginate($limit);
 
         return OrderResource::collection($data);
+    }
+
+    public function statistic()
+    {
+        $count_all_orders = Order::count();
+        $count_processing_orders = Order::where('status', 'processing')->count();
+        $count_deliverying_orders = Order::where('status', 'deliverying')->count();
+        $count_complete_orders = Order::where('status', 'complete')->count();
+        $count_cancel_orders = Order::where('status', 'cancel')->count();
+
+        $last_6_months = Order::where("created_at", ">", Carbon::now()->subMonths(6))->get();
+
+        $data = [
+            'order' => [
+                'all' => $count_all_orders,
+                'processing' => $count_processing_orders,
+                'deliverying' => $count_deliverying_orders,
+                'complete' => $count_complete_orders,
+                'cancel' => $count_cancel_orders,
+            ],
+            'statistic' => $last_6_months->groupBy(function ($item) {
+                return $item->created_at->format('n');
+            })->map(function ($item) {
+                return $item->count();
+            })->toArray(),
+        ];
+
+        return response()->json([
+            'status' => 200,
+            'data' => $data,
+        ]);
     }
 
     /**

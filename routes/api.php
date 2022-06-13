@@ -29,7 +29,6 @@ Route::post('/auth/change-password', [AuthController::class, 'changePassword']);
 
 Route::get('/user', [UserController::class, 'getUsers']);
 
-Route::apiResource('/orders', OrderController::class)->except('destroy', 'update', 'create');
 Route::apiResource('/ratings', RatingController::class)->except('destroy', 'update', 'create');
 Route::apiResource('/products', ProductController::class)->except('destroy', 'update', 'create');
 Route::apiResource('/categories', CategoryController::class)->except('destroy', 'update', 'create');
@@ -52,6 +51,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::apiResource('/categories', CategoryController::class)->except('update', 'index', 'show');
     Route::post('/categories/{categoryId}', [CategoryController::class, 'update']);
 
+    Route::get('/orders/statistic', [OrderController::class, 'statistic']);
     Route::apiResource('/orders', OrderController::class)->except('destroy', 'index', 'show');
+
     Route::apiResource('/ratings', RatingController::class)->except('index', 'show');
 });
+
+Route::apiResource('/orders', OrderController::class)->except('destroy', 'update', 'create');
