@@ -23,6 +23,24 @@ class CartItemSeeder extends Seeder
                 'user_id' => 1,
             ],
             [
+                'amount' => 10,
+
+                'product_id' => 2,
+                'user_id' => 1,
+            ],
+            [
+                'amount' => 10,
+
+                'product_id' => 3,
+                'user_id' => 1,
+            ],
+            [
+                'amount' => 10,
+
+                'product_id' => 4,
+                'user_id' => 1,
+            ],
+            [
                 'amount' => 20,
 
                 'product_id' => 2,

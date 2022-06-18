@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
@@ -55,6 +56,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::apiResource('/orders', OrderController::class)->except('destroy', 'index', 'show');
 
     Route::apiResource('/ratings', RatingController::class)->except('index', 'show');
+
+
+    Route::get('/carts/count', [CartItemController::class, 'count_amount']);
+    Route::apiResource('/carts', CartItemController::class)->except('destroy', 'show', 'update', 'destroy');
 });
 
 Route::apiResource('/orders', OrderController::class)->except('destroy', 'update', 'create');
