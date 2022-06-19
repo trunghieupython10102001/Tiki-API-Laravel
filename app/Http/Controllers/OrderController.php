@@ -24,12 +24,14 @@ class OrderController extends Controller
 
         $phone_number = request()->phone_number ?? '';
         $id = request()->id ?? '';
-        $status = request()->status ?? '';
+        $status = request()->status ? strtolower(request()->status): '';
         $recipient_name = request()->recipient_name ?? '';
         $user_id = request()->user_id ?? null;
 
         if ($user_id) {
-            return OrderResource::collection(Order::with('orderItems.product')->where('user_id', $user_id)->orderBy($sort_by, $order_by)->paginate($limit));
+            return OrderResource::collection(Order::with('orderItems.product')
+            ->where('user_id', $user_id)->where('status', 'like', '%' . $status . '%')
+            ->orderBy($sort_by, $order_by)->paginate($limit));
         }
 
         $data = Order::with('orderItems.product')

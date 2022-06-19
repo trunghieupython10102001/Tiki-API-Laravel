@@ -78,7 +78,7 @@ class CartItemController extends Controller
                 $message = 'Xóa thành công';
             } else {
 
-                $cart_item->amount += $request->amount;
+                $cart_item->amount = $request->amount;
                 $cart_item->save();
 
                 $message = 'Cập nhật thành công';
