@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Http\Resources\OrderResource;
+use App\Models\OrderItem;
 use Carbon\Carbon;
 
 class OrderController extends Controller
@@ -81,7 +82,19 @@ class OrderController extends Controller
      */
     public function store(StoreOrderRequest $request)
     {
-        Order::create($request->all());
+        $all = $request->all();
+        $cart_items = $all['cart_items'];
+
+        // remove cart_items
+        unset($all['cart_items']);
+
+        $new_order = Order::create($request->all());
+
+        foreach ($cart_items as $cart_item) {
+            $cart_item['order_id'] = $new_order->id;
+            OrderItem::create($cart_item);
+        }
+
         return response()->json([
             'status' => 201,
             'message' => 'Tạo đơn hàng thành công',
